@@ -1,0 +1,290 @@
+
+.CodebaseComponent {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 16px;
+}
+
+.CodebaseComponent__title {
+    color: #777777;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.CodebaseComponent:last-of-type {
+    padding-bottom: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.CodebaseComponent .Properties {
+    display: flex;
+    flex-basis: auto;
+    gap: 16px;
+
+    list-style: none;
+    padding: 0;
+    margin-bottom: 8px;
+
+    .Properties__item {
+        flex: 1;
+    }
+
+    .Properties__item--table {
+        padding: 8px;
+        border-top: 1px solid #eaeaea;
+    }
+
+    .Properties__item--table:nth-child(odd) {
+        background-color: #f5f7f8;
+    }
+
+    .Properties__title,
+    .Properties__label {
+        color: #999999;
+        display: block;
+        font-size: 10px;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+
+        &.Properties__prop {
+            margin: 0;
+        }
+    }
+
+    .Properties__label {
+        display: inline-block;
+    }
+
+    .Properties__value {
+        span.primary {
+            color: #333333;
+            font-weight: bold;
+            a {
+                color: inherit;
+            }
+        }
+        span.secondary {
+            color: #333333;
+            a {
+                color: inherit;
+            }
+        }
+        span.empty {
+            color: #666666;
+        }
+        span.date {
+            color: #999999;
+        }
+        span.date--passed {
+            color: darkred;
+        }
+        span.date--not-passed {
+            color: inherit;
+        }
+        span.user {
+            color: #333333;
+            font-weight: bold;
+            a {
+                color: inherit;
+            }
+        }
+        span.text--code {
+            a {
+                color: inherit;
+            }
+        }
+    }
+
+    .Properties__value--list {
+        .Properties__value {
+            margin-bottom: 4px;
+        }
+        .Properties__value:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    .Properties__value--tags {
+        display: flex;
+        gap: 6px;
+
+        .TicketProperties__tag {
+            text-transform: lowercase;
+        }
+    }
+
+    .Properties__value--long {
+        color: #666666;
+    }
+
+    .Properties__input {
+        textarea {
+            width: 100%;
+        }
+
+        input[type="number"] {
+            width: auto;
+            padding: 5px 3px 4px 8px;
+        }
+    }
+
+    .Properties__list {
+        display: flex;
+        gap: 8px;
+
+        .Properties__prop {
+            flex: 1 1 0;
+        }
+
+        .Prop__name {
+            flex: 1 1 0;
+        }
+
+        .Prop__time {
+            flex: 0.3 1 0;
+        }
+    }
+}
+
+.CodebaseComponent .Properties:last-of-type {
+    margin-bottom: 0;
+}
+
+.CodebaseComponent .Properties--table {
+    row-gap: 0;
+}
+
+.CodebaseComponent .Properties--row {
+    flex-direction: row;
+}
+
+.CodebaseComponent .Properties--column {
+    flex-direction: column;
+}
+
+.CodebaseComponent .Properties--tight {
+    gap: 6px;
+}
+
+
+.Participant__list {
+    display: flex;
+    gap: 8px;
+}
+
+.Blockers {
+    position: relative;
+}
+
+a.AddBlockersLink {
+    color: #666666;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.Post--full {
+    margin: 8px 0 0;
+}
+
+.ThreadChanges {
+    margin-top: 0;
+}
+
+.ThreadChanges__event {
+    padding-left: 72px;
+}
+
+.ThreadChanges__event::before {
+    border-radius: 8px;
+}
+
+body:has(.Thread) .Push__meta {
+    padding-bottom: 0;
+}
+
+body:has(.Thread) .Push__commit {
+    margin-top: 0;
+}
+
+.Tooltip a {
+    color: inherit;
+}
+
+body:has(.Thread) #content .right {
+    position: sticky;
+    top: 0;
+}
+
+/* Codebase's own sidebar modules on the ticket page (milestone, access), replaced by ours.
+   Only there, other pages like the dashboard use the same modules for their own content. */
+body:has(.Thread) #content .right > .sidebar__module--medium:nth-child(2),
+body:has(.Thread) #content .right > .sidebar__module--medium:nth-child(3) {
+    display: none;
+}
+
+/* Ticket subject ----------------------------------------------------------- */
+
+.TicketSubject {
+    display: flex;
+    margin: 0;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+}
+
+.TicketId {
+    color: #59636e;
+}
+
+.ThreadMeta { display: none; }
+
+.Thread__header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #fff;
+    margin: 0 0 30px;
+}
+
+.TicketProperties {
+    border-color: #e5ebee;
+}
+
+.Thread__timeline .box {
+    border-color: #e5ebee;
+}
+
+body:has(.Thread) .u-text-center {
+    text-align: left;
+}
+
+.TicketId__actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+body:has(.Thread) #sub-header h2.u-ellipsis,
+h2.Thread__subject.heading--delta {
+    display: none;
+}
+
+body:has(.Thread) #sub-header {
+    min-height: auto;
+}
+.CodebaseComponent--error {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10;
+    padding: 8px 12px;
+    border: 1px solid #f4e6c8;
+    border-radius: 4px;
+    background-color: #ffffcc;
+    font-size: 13px;
+}

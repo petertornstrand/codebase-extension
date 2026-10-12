@@ -1,0 +1,59 @@
+# Builds and publishes a release when a version tag is pushed:
+#
+#     git tag v1.6.0 && git push origin v1.6.0
+#
+# Attaches the Firefox and Chrome extensions. If the
+# AMO_JWT_ISSUER and AMO_JWT_SECRET secrets are set, the Firefox extension is
+# also signed (unlisted) so it installs in regular Firefox.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+      AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+
+      - name: Check that the tag matches the version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match the version $version in package.json."
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      # Runs the tests, then builds both extensions.
+      - run: npm run release:build
+
+      - name: Sign the Firefox extension
+        if: env.AMO_JWT_ISSUER != ''
+        run: |
+          npx --yes web-ext@8 sign \
+            --source-dir dist/extension/firefox \
+            --artifacts-dir dist/signed \
+            --channel unlisted \
+            --api-key "$AMO_JWT_ISSUER" \
+            --api-secret "$AMO_JWT_SECRET"
+          cp dist/signed/*.xpi "dist/release/codebase-firefox-$VERSION.xpi"
+
+      - name: Create the release
+        run: gh release create "$GITHUB_REF_NAME" dist/release/* --title "$GITHUB_REF_NAME" --generate-notes

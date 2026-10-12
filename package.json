@@ -1,0 +1,27 @@
+{
+    "name": "codebase-extension",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "dependencies": {
+        "preact": "^10.26.9",
+        "react-query": "^3.39",
+        "react-tooltip": "^5.29.1",
+        "vite": "^5.2.14",
+        "vite-plugin-svgr": "^4.5.0"
+    },
+    "scripts": {
+        "build": "node scripts/build-extension.mjs",
+        "build:extension": "node scripts/build-extension.mjs",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "icons": "node scripts/generate-icons.mjs",
+        "icons:extension": "node scripts/generate-extension-icons.mjs",
+        "release:build": "npm test && npm run build:extension && node scripts/package-release.mjs"
+    },
+    "devDependencies": {
+        "@primer/octicons": "^19.40.0",
+        "jsdom": "^25.0.1",
+        "vitest": "^2.1.9"
+    }
+}

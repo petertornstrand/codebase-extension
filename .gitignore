@@ -1,0 +1,16 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# build output
+/dist
+/web-ext-artifacts
+
+# misc
+.DS_Store
+.idea/
+.env
+.env.*
+npm-debug.log*

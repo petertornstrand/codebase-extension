@@ -1,0 +1,104 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import './styles/Global.css';
+import './styles/Modern.css';
+import './styles/Icons.css';
+// Loaded here, not with the lazily imported ticket module: the built script has a single stylesheet
+// that applies on every page, and the preview should behave the same.
+import './styles/Ticket.css';
+import './styles/CopyButton.css';
+import Notice from './Notice';
+import initProjects from './pages/projects';
+import initAvatars from './avatars';
+import initMentions from './mentions';
+import initDashboard from './pages/dashboard';
+import initMilestones from './pages/milestones';
+import initTickets from './pages/tickets';
+import initUsers from './pages/users';
+import { awaitElement, log, addLocationChangeCallback, claimPage, getCodebaseConfig } from './utils';
+
+
+/**
+ * Render the React ticket components.
+ *
+ * The ticket module is loaded on demand since it requires API configuration
+ * that the other pages do not need.
+ */
+async function renderTicket() {
+    // Styles the original page as a skeleton until the ticket data has loaded.
+    document.documentElement.classList.add('cb-ticket-loading');
+    let target = await awaitElement('body');
+    let container = document.createElement('div');
+    target.appendChild(container);
+    let root = createRoot(container);
+
+    let Ticket;
+    try {
+        // Checked here and not when the ticket module loads: in the browser
+        // extension all modules are evaluated at once, when the script starts.
+        getCodebaseConfig();
+        ({ default: Ticket } = await import('./Ticket'));
+    } catch (e) {
+        // Typically missing configuration.
+        log(e);
+        document.documentElement.classList.remove('cb-ticket-loading');
+        root.render(<Notice message={`${e.message} Showing the original page.`} />);
+        return;
+    }
+
+    const queryClient = new QueryClient();
+    root.render(
+        <QueryClientProvider client={queryClient} contextSharing={false}>
+            <Ticket />
+        </QueryClientProvider>
+    );
+}
+
+// Do the required initial work. Gets called every time the URL changes,
+// so that elements can be re-inserted as a user navigates a page with
+// different routes.
+async function main() {
+    const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+    await awaitElement('body');
+
+    initAvatars();
+    initMentions();
+    if (path === '') {
+        initDashboard();
+    }
+    if (/^users\//.test(path)) {
+        initUsers();
+    }
+    if (/^projects\/[^/]+\//.test(path)) {
+        initProjects();
+    }
+    if (/^projects\/[^/]+\/milestones(\/|$)/.test(path)) {
+        initMilestones();
+    }
+    if (/^projects\/[^/]+\/tickets\/\d+/.test(path)) {
+        initTickets();
+        await renderTicket();
+    }
+}
+
+/**
+ * Start the page improvements. Called by the content script once it is ready,
+ * not when this module loads: the extension bundles everything into one script
+ * that evaluates all modules at once.
+ */
+export function start() {
+    if (!claimPage()) {
+        return;
+    }
+    log('React script has successfully started');
+
+    // Call `main()` every time the page URL changes, including on the first load.
+    addLocationChangeCallback(() => {
+        // Greasemonkey doesn't bubble errors up to the main console,
+        // so we have to catch them manually and log them.
+        main().catch((e) => {
+            log(e);
+        });
+    });
+}
