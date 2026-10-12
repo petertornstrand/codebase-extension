@@ -20,7 +20,19 @@ const MAX_IMAGE_SIZE = 1024 * 1024;
  */
 async function isGatewayUrl(url) {
     const { cbapi_base_url: base } = await ext.storage.local.get('cbapi_base_url');
-    return Boolean(base) && url.startsWith(`${base}/`);
+    if (!base) {
+        return false;
+    }
+    // Compare parsed URLs: `new URL` resolves `..` segments, which a plain
+    // prefix check would let out of the gateway's path.
+    try {
+        const gateway = new URL(base);
+        const target = new URL(url);
+        return target.origin === gateway.origin
+            && target.pathname.startsWith(`${gateway.pathname.replace(/\/+$/, '')}/`);
+    } catch {
+        return false;
+    }
 }
 
 async function handleFetch({ url, options }) {

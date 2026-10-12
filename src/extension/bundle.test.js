@@ -111,6 +111,18 @@ describe('built extension', () => {
             .toEqual({ dataUrl: 'data:image/png;base64,eA==' });
     });
 
+    it('keeps requests inside the gateway path', async () => {
+        const { background } = await openPage({
+            html: feed,
+            url: 'https://code.happiness.se/',
+            storage: { ...settings, cbapi_base_url: 'https://api.example/gw' },
+        });
+        expect(await background.send({ type: 'fetch', url: 'https://api.example/gw/../other', options: {} }))
+            .toEqual({ error: 'Not the configured API gateway.' });
+        expect(await background.send({ type: 'fetch', url: 'https://api.example/gw-other/x', options: {} }))
+            .toEqual({ error: 'Not the configured API gateway.' });
+    });
+
     it('stays disabled when something else has claimed the page', async () => {
         const { document } = await openPage({ html: feed, url: 'https://code.happiness.se/', owner: 'userscript' });
         // Give it the time it needs to add the summary, if it were running.

@@ -293,3 +293,48 @@ export function onlyMentionedTickets(tickets, ticketId) {
     }
     return tickets.filter((ticket) => ticket.id !== ticketId && mentioned.has(Number(ticket.id)));
 }
+
+const SAFE_TAGS = new Set(['A', 'SPAN', 'STRONG', 'B', 'EM', 'I', 'CODE', 'SMALL', 'S', 'DEL', 'BR']);
+const SAFE_ATTRIBUTES = new Set(['href', 'class', 'title', 'target', 'rel']);
+
+/**
+ * Sanitize HTML from the API gateway before it is put in the page: only a small
+ * set of inline tags and attributes is kept, and links may only be http(s),
+ * mailto or relative. Everything else, including the content of disallowed
+ * elements such as scripts, is removed.
+ *
+ * @param {string} html
+ * @return {string}
+ */
+export function sanitizeHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = String(html ?? '');
+
+    const clean = (parent) => {
+        [...parent.children].forEach((el) => {
+            if (!SAFE_TAGS.has(el.tagName)) {
+                // Drop the element, but keep the text of harmless wrappers.
+                if (['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'TEMPLATE', 'SVG', 'MATH'].includes(el.tagName.toUpperCase())) {
+                    el.remove();
+                } else {
+                    clean(el);
+                    el.replaceWith(...el.childNodes);
+                }
+                return;
+            }
+            [...el.attributes].forEach(({ name, value }) => {
+                const allowed = SAFE_ATTRIBUTES.has(name) || name.startsWith('data-');
+                const safeUrl = name !== 'href' || /^(https?:|mailto:|[/#?]|[^:]*$)/i.test(value.trim());
+                if (!allowed || !safeUrl) {
+                    el.removeAttribute(name);
+                }
+            });
+            if (el.getAttribute('target') === '_blank') {
+                el.setAttribute('rel', 'noopener noreferrer');
+            }
+            clean(el);
+        });
+    };
+    clean(template.content);
+    return template.innerHTML;
+}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
-import { log, findCodebaseAvatar, findNotificationChannels, onlyMentionedTickets } from './utils';
+import { log, findCodebaseAvatar, findNotificationChannels, onlyMentionedTickets, sanitizeHtml } from './utils';
 import { addMentionUsers } from './mentions';
 import CopyButton from './CopyButton';
 import Notice from './Notice';
@@ -398,7 +398,7 @@ function ReferencedTickets({tickets}) {
                     <ul className="Properties__value Properties__value--list ReferencedTickets">
                         { tickets.map((ticket) => {
                             return (
-                                <li key={ticket.id} dangerouslySetInnerHTML={{__html: ticket.htmlLink}} />
+                                <li key={ticket.id} dangerouslySetInnerHTML={{__html: sanitizeHtml(ticket.htmlLink)}} />
                             );
                         })}
                     </ul>

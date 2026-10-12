@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import { Tooltip } from 'react-tooltip';
 import Loading from "./styles/Loading.svg?react";
-import { log, getCodebaseConfig } from "./utils.js";
+import { log, getCodebaseConfig, sanitizeHtml } from "./utils.js";
 import CodebaseAPI, { TICKET_FORMAT } from "./CodebaseAPI.js";
 import './styles/Global.css';
 
@@ -79,7 +79,7 @@ export function DecoratedTicketLinks({ tickets, projectPermalink }) {
             const parent = link.parentElement;
             const container = document.createElement('div');
             container.classList.add('ReactComponentWrapper');
-            container.innerHTML = ticket.htmlLink;
+            container.innerHTML = sanitizeHtml(ticket.htmlLink);
             parent.replaceChild(container, link);
             link.remove();
         });

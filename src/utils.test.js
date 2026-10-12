@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { findCodebaseAvatar, onlyMentionedTickets } from './utils';
+import { findCodebaseAvatar, onlyMentionedTickets, sanitizeHtml } from './utils';
 
 beforeEach(() => {
     document.body.innerHTML = `<div id="content">
@@ -68,5 +68,18 @@ describe('onlyMentionedTickets', () => {
         expect(onlyMentionedTickets(tickets, 42)).toEqual([]);
         thread('#1');
         expect(onlyMentionedTickets(undefined, 42)).toEqual([]);
+    });
+});
+
+describe('sanitizeHtml', () => {
+    it('keeps ticket links', () => {
+        const html = '<a href="/projects/a/tickets/1" class="TicketLink" data-id="1">#1</a>';
+        expect(sanitizeHtml(html)).toBe(html);
+    });
+
+    it('removes scripts, event handlers and javascript: links', () => {
+        const out = sanitizeHtml('<a href="javascript:alert(1)" onclick="x()">a</a><script>alert(1)</script><img src=x onerror="x()"><b onmouseover="y()">b</b>');
+        expect(out).not.toMatch(/script|javascript|onclick|onerror|onmouseover|<img/i);
+        expect(out).toContain('<b>b</b>');
     });
 });
