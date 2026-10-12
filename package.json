@@ -16,7 +16,6 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "icons": "node scripts/generate-icons.mjs",
-        "icons:extension": "node scripts/generate-extension-icons.mjs",
         "release:build": "npm test && npm run build:extension && node scripts/package-release.mjs"
     },
     "devDependencies": {

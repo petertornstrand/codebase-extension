@@ -126,8 +126,8 @@ Update the fixtures if Codebase changes its markup.
 
 ### Icons
 
-The icons in `src/extension/icons` are generated placeholders
-(`npm run icons:extension`). Replace the files with real artwork. The
+The extension icons are in `src/extension/icons`: `icon.svg` and
+`icon-small.svg` are the sources, the PNGs are the sizes the manifest uses. The
 Codebase specific icons in the stylesheet are generated from GitHub Octicons
 with `npm run icons`.
 
