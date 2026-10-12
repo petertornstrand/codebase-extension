@@ -21,10 +21,9 @@ It is written with [Preact](https://preactjs.com/) (through `preact/compat`, so
 the code and libraries use the React API) and built with [Vite](https://vite.dev/)
 as a Manifest V3 extension.
 
-The extension runs on:
-
-- `https://code.happiness.se/*`
-- `https://happiness.codebasehq.com/*`
+The extension runs on Codebase accounts at `https://<account>.codebasehq.com/`.
+An account on its own domain (such as `https://code.example.com/`) is added in
+the settings, see [Configuration](#configuration).
 
 ## Features
 
@@ -237,8 +236,10 @@ toolbar button to open the settings:
 | Codebase API username   | Your Codebase API username.           |
 | Codebase API key        | Your Codebase API key.                |
 
+| Other Codebase addresses | Only if your Codebase is not at `*.codebasehq.com`: the address(es) it runs on, one per line. |
+
 When you save, the browser asks whether the extension may access the API
-gateway: allow it. Reload open Codebase tabs after saving. The settings are
+gateway and the addresses you listed: allow it. Reload open Codebase tabs after saving. The settings are
 stored in this browser only (`storage.local`, they are not synced).
 
 Without the settings the ticket page is left as Codebase renders it and a small
@@ -274,14 +275,18 @@ two copies of the improvements don't both run. The userscript doesn't check it
 
 ## Development
 
-You need Node.js 22. The commands are plain `npm` commands, in this folder.
+[DDEV](https://ddev.com/) provides Node.js 22 (and `zip`, for the release
+build), so nothing needs to be installed on the host. Start it once and run the
+`npm` commands through `ddev`, in this folder. With Node.js 22 installed on the
+host, plain `npm` works as well.
 
 ```sh
-npm install
-npm test              # single run
-npm run test:watch    # re-run on change
-npm run build         # both browsers, output in dist/extension/<target>
-npm run build firefox # or chrome
+ddev start
+ddev npm install
+ddev npm test              # single run
+ddev npm run test:watch    # re-run on change
+ddev npm run build         # both browsers, output in dist/extension/<target>
+ddev npm run build firefox # or chrome
 ```
 
 Load the build in the browser:
@@ -336,7 +341,7 @@ differs from the original in
 To build the same files locally (they end up in `dist/release`, needs `zip`):
 
 ```sh
-npm run release:build
+ddev npm run release:build
 ```
 
 ### Signing the Firefox extension

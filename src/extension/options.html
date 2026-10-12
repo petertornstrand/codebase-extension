@@ -28,6 +28,14 @@
             <label>Codebase API key
                 <input name="cb_key" type="password" required autocomplete="off">
             </label>
+            <label>Other Codebase addresses (optional)
+                <textarea name="cb_sites" rows="3" autocomplete="off"
+                          placeholder="https://code.example.com"></textarea>
+                <small>
+                    Only needed if your Codebase is not at
+                    <code>*.codebasehq.com</code>. One address per line.
+                </small>
+            </label>
             <button type="submit">Save</button>
             <span id="status" role="status"></span>
         </form>

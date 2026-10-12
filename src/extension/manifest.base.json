@@ -4,13 +4,17 @@
     "description": "Improves the Codebase project management application.",
     "permissions": [
         "storage",
-        "notifications"
+        "notifications",
+        "scripting"
     ],
     "content_scripts": [
         {
             "matches": [
-                "https://code.happiness.se/*",
-                "https://happiness.codebasehq.com/*"
+                "https://*.codebasehq.com/*"
+            ],
+            "exclude_matches": [
+                "https://www.codebasehq.com/*",
+                "https://api3.codebasehq.com/*"
             ],
             "js": [
                 "content.js"

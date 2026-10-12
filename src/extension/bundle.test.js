@@ -41,7 +41,8 @@ function startBackground(storage) {
             }
         },
         browser: {
-            storage: { local: { get: async () => storage } },
+            storage: { local: { get: async () => storage }, onChanged: { addListener() {} } },
+            scripting: { unregisterContentScripts: async () => {}, registerContentScripts: async () => {} },
             runtime: { onMessage: { addListener: (fn) => (listener = fn) }, onInstalled: { addListener() {} }, getURL: (path) => path },
             notifications: { create() {} },
             action: { onClicked: { addListener() {} } },

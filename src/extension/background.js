@@ -78,6 +78,30 @@ function handleNotify({ notification: { title, text, tag } }) {
     });
 }
 
+/**
+ * Accounts on their own domain (not `*.codebasehq.com`) are listed in the
+ * settings. The manifest can't match them, so the content script is registered
+ * for them here. The settings page has already asked for the permission.
+ */
+async function syncSites() {
+    const { cb_sites: sites } = await ext.storage.local.get('cb_sites');
+    const matches = (sites ?? []).map((origin) => `${origin}/*`);
+    try {
+        await ext.scripting.unregisterContentScripts({ ids: ['custom-sites'] });
+    } catch {
+        // Not registered yet.
+    }
+    if (matches.length) {
+        await ext.scripting.registerContentScripts([{
+            id: 'custom-sites',
+            matches,
+            js: ['content.js'],
+            css: ['content.css'],
+            runAt: 'document_start',
+        }]);
+    }
+}
+
 const handlers = { notify: handleNotify, fetch: handleFetch, image: handleImage };
 
 ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -93,8 +117,15 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
 });
 
+ext.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.cb_sites) {
+        syncSites();
+    }
+});
+
 // Open the options page on first install, nothing works without the settings.
 ext.runtime.onInstalled.addListener(({ reason }) => {
+    syncSites();
     if (reason === 'install') {
         ext.runtime.openOptionsPage();
     }
