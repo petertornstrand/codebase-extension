@@ -229,13 +229,12 @@ The ticket page needs access to the Codebase API through the
 project that this extension uses to communicate with the Codebase API. Click the
 toolbar button to open the settings:
 
-| Setting                 | Description                           |
-|-------------------------|---------------------------------------|
-| API gateway URL         | URL of the Codebase API Gateway.      |
-| API gateway key         | API key for the Codebase API Gateway. |
-| Codebase API username   | Your Codebase API username.           |
-| Codebase API key        | Your Codebase API key.                |
-
+| Setting                  | Description                           |
+|--------------------------|---------------------------------------|
+| API gateway URL          | URL of the Codebase API Gateway.      |
+| API gateway key          | API key for the Codebase API Gateway. |
+| Codebase API username    | Your Codebase API username.           |
+| Codebase API key         | Your Codebase API key.                |
 | Other Codebase addresses | Only if your Codebase is not at `*.codebasehq.com`: the address(es) it runs on, one per line. |
 
 When you save, the browser asks whether the extension may access the API
