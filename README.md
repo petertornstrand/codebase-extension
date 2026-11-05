@@ -98,8 +98,8 @@ based on the GitHub issue sidebar.
 
 #### Mentions
 
-@mentions in comments and in the activity feed show a name, `@Vito K.`, instead
-of the handle, `@vito-kasim-31`. The handle is the tooltip. The name comes from
+@mentions in comments and in the activity feed show a name, `@John D.`, instead
+of the handle, `@john-doe-31`. The handle is the tooltip. The name comes from
 the project's users, from a matching name on the page, or from the handle itself
 when it has several parts. A handle that can't be turned into a name is left as
 it is.
